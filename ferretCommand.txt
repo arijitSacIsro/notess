@@ -1,0 +1,110 @@
+1: ferret
+
+2: use ds.nc
+
+
+3: show data
+
+
+4: show map of first time step: fill/X=48:52/Y=-22:-20/T=1 ETAN
+
+
+5: similarly we can say: fill/X=48:52/Y=-22:-20/T="1995-09-01"
+
+
+6: Time series at a single point: [x = 50, y = -20]
+
+plot/X=50/Y=-20/T=1:300 ETAN   o==or==o 	plot/T=1:100 ETAN[X=50, Y=-20]
+
+
+
+7: Mean over time: 	let ssh_mean = ETAN[T=@ave]
+			fill/X=48:52/Y=-22:-20 ssh_mean
+
+
+
+8: Anomaly:	let ssh_mean = ETAN[L=@ave]
+		let ssha = ETAN - ssh_mean
+		fill/X=48:52/Y=-22:-20/T=1 ssha
+
+
+
+9: as Zd000001=1 => only one step so don't need to specify but still we can
+		   write like that:
+			
+			fill/X=48:52/Y=-22:-20/L=1/Zd000001=1 ETAN
+
+
+
+
+o== NOTE ==o
+
+1: fill / shade -> 2d maps(fix T) for 3d dataset
+
+2: plot -> 1d lines (fix x and y)
+
+3: @ave, @std -> average and statistics
+
+
+
+
+
+o=== ADVANCED ===o
+
+A> Learn filtering / anomalies / statistics / sections / indices etc
+
+
+
+1: Region Mean SSH:
+
+let ssh_regmean ETAN[X=56:58, Y=-21:-22, T=@ave]
+plot ssh_regmean
+
+or
+
+plot/X=56:58/Y=-21:-22/L=@ave ETAN
+
+
+
+
+2: Anomalies and Detrending:
+
+let ssh_mean = ETAN[L=@ave]
+let ssha = ETAN - ssh_mean
+shade/X=52:54/Y=-20.99:-21.97/T=1 ssha
+
+
+// ------------------ Remove linear trend and detrend --------------
+
+let ssh_trend  = ETAN[T=@linfit]
+let ssh_detr = ETAN - ssh_trend
+plot/X=-50/Y=-20/L=1:300 ssh_detr
+
+
+
+
+3:sections [lat - time or long - time plots]
+
+-> long time section at X = -20: 
+
+shade/X=48:50/Y=-23/T=1:300 ETAN
+
+
+-> lat time section at Y = 50
+
+shade/X=50/Y=-20.99:-21.97/T=1:300 ETAN
+
+or
+
+shade/Y=-20.99:-21.97/T=1:300 ETAN[X=50]
+
+
+
+
+// SAVE PLOTS
+
+yes? set term png
+yes? shade sst
+yes? frame/file=sst_plot.png
+
+
